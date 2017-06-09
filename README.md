@@ -5,6 +5,7 @@
 1. Take random set of 100, 1000, 10 000, 50 000, 100 000 SNPs
 a. PLINK --thin 0.2 (a random 20% of SNPs)
 b. or something else (R sample)
+
 2. Calculate Froh
   a. PLINK    --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2
   b. From the result files Froh = KB/genome size
