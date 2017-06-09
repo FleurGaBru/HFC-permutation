@@ -27,4 +27,4 @@
  
 Plink normal files, chrs as numbers. Chr size file.
 
-final: per 100x permutation average Froh, average Fhom, average g2_snps and HHC
+#### final: per 100x permutation average Froh, average Fhom, average g2_snps and HHC
