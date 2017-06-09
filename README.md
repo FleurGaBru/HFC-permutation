@@ -9,6 +9,7 @@ b. or something else (R sample)
   a. PLINK    --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2
   b. From the result files Froh = KB/genome size
   c. Needs the chromosomes covered (genome size) in order to calculate Froh, varies from the sampling, if a chromosome is covered by at least 1 SNP, it is covered and added to the genome size
+
 3. Calculate Fhom
 a. PLINK --het
 b. From the results Fhom = O(HOM)/N(NM)
