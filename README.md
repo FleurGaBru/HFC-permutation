@@ -27,7 +27,7 @@ Phenotype data is quantitative.
 --make-bed to ./analysis/plink_100.bed + ./analysis/plink_100.bim +
 ./analysis/plink_100.fam ... done.
 
-plink2 --bfile binary_fileset --recode --out new_text_fileset
+plink2 --allow-extra-chr --bfile ./analysis/plink_100 --recode --out ./analysis/plink_100_recode
 ```
 
 2. Calculate Froh
