@@ -6,7 +6,7 @@
     * PLINK --thin 0.2 (a random 20% of SNPs)
     * or something else (R sample)
 
-```
+```bash
 plink2 --allow-extra-chr --chr-set 33 --file ./data/cleaned_notstrict_hfc --thin-count 100 --make-bed --out ./analysis/plink_100
 
 # 1031971 MB RAM detected; reserving 515985 MB for main workspace.
