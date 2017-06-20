@@ -73,6 +73,8 @@ do
     cat data/chr_size_gtgenome1.1_.txt | awk '/$i/' >> ./Froh/chr_sizes.txt
 done
 
+# sum up the chromosome sizes
+cat ./Froh/chr_sizes.txt | cut -f2 | awk '{s+=$1} END {print s}'
 ```
 3. Calculate Fhom
     * PLINK --het
