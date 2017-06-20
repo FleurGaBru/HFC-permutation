@@ -5,8 +5,28 @@
 1. Take random set of 100, 1000, 10 000, 50 000, 100 000 SNPs
     * PLINK --thin 0.2 (a random 20% of SNPs)
     * or something else (R sample)
+
 ```
 plink2 --allow-extra-chr --chr-set 33 --file ./data/cleaned_notstrict_hfc --thin-count 100 --make-bed --out ./analysis/plink_100
+
+1031971 MB RAM detected; reserving 515985 MB for main workspace.
+.ped scan complete (for binary autoconversion).
+Performing single-pass .bed write (446699 variants, 2143 samples).
+--file: ./analysis/plink_100-temporary.bed + ./analysis/plink_100-temporary.bim
++ ./analysis/plink_100-temporary.fam written.
+446699 variants loaded from .bim file.
+2143 samples (0 males, 2143 females) loaded from .fam.
+2143 phenotype values loaded from .fam.
+--thin-count: 446599 variants removed (100 remaining).
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 2143 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+Total genotyping rate is 0.995964.
+100 variants and 2143 samples pass filters and QC.
+Phenotype data is quantitative.
+--make-bed to ./analysis/plink_100.bed + ./analysis/plink_100.bim +
+./analysis/plink_100.fam ... done.
+
 plink2 --bfile binary_fileset --recode --out new_text_fileset
 ```
 
