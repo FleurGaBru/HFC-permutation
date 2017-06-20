@@ -9,25 +9,48 @@
 ```
 plink2 --allow-extra-chr --chr-set 33 --file ./data/cleaned_notstrict_hfc --thin-count 100 --make-bed --out ./analysis/plink_100
 
-1031971 MB RAM detected; reserving 515985 MB for main workspace.
-.ped scan complete (for binary autoconversion).
-Performing single-pass .bed write (446699 variants, 2143 samples).
---file: ./analysis/plink_100-temporary.bed + ./analysis/plink_100-temporary.bim
-+ ./analysis/plink_100-temporary.fam written.
-446699 variants loaded from .bim file.
-2143 samples (0 males, 2143 females) loaded from .fam.
-2143 phenotype values loaded from .fam.
---thin-count: 446599 variants removed (100 remaining).
-Using 1 thread (no multithreaded calculations invoked).
-Before main variant filters, 2143 founders and 0 nonfounders present.
-Calculating allele frequencies... done.
-Total genotyping rate is 0.995964.
-100 variants and 2143 samples pass filters and QC.
-Phenotype data is quantitative.
---make-bed to ./analysis/plink_100.bed + ./analysis/plink_100.bim +
-./analysis/plink_100.fam ... done.
+# 1031971 MB RAM detected; reserving 515985 MB for main workspace.
+# .ped scan complete (for binary autoconversion).
+# Performing single-pass .bed write (446699 variants, 2143 samples).
+# --file: ./analysis/plink_100-temporary.bed + ./analysis/plink_100-temporary.bim
+# + ./analysis/plink_100-temporary.fam written.
+# 446699 variants loaded from .bim file.
+# 2143 samples (0 males, 2143 females) loaded from .fam.
+# 2143 phenotype values loaded from .fam.
+# --thin-count: 446599 variants removed (100 remaining).
+# Using 1 thread (no multithreaded calculations invoked).
+# Before main variant filters, 2143 founders and 0 nonfounders present.
+# Calculating allele frequencies... done.
+# Total genotyping rate is 0.995964.
+# 100 variants and 2143 samples pass filters and QC.
+# Phenotype data is quantitative.
+# --make-bed to ./analysis/plink_100.bed + ./analysis/plink_100.bim +
+# ./analysis/plink_100.fam ... done.
 
 plink2 --allow-extra-chr --bfile ./analysis/plink_100 --recode --out ./analysis/plink_100_recode
+# output is a map, ped and log file
+
+plink2 --allow-extra-chr --chr-set 33 --file ./analysis/plink_100_recode  --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2 --out ./analysis/ROH_files_100
+
+# 1031971 MB RAM detected; reserving 515985 MB for main workspace.
+# .ped scan complete (for binary autoconversion).
+# Performing single-pass .bed write (100 variants, 2143 samples).
+# --file: ./analysis/ROH_files_100-temporary.bed +
+# ./analysis/ROH_files_100-temporary.bim + ./analysis/ROH_files_100-temporary.fam
+# written.
+# 100 variants loaded from .bim file.
+# 2143 samples (0 males, 2143 females) loaded from .fam.
+# 2143 phenotype values loaded from .fam.
+# Using 1 thread (no multithreaded calculations invoked).
+# Before main variant filters, 2143 founders and 0 nonfounders present.
+# Calculating allele frequencies... done.
+# Total genotyping rate is 0.995964.
+# 100 variants and 2143 samples pass filters and QC.
+# Phenotype data is quantitative.
+# --homozyg: Scan complete, found 0 ROH.
+# Results saved to ./analysis/ROH_files_100.hom +
+# ./analysis/ROH_files_100.hom.indiv + ./analysis/ROH_files_100.hom.summary .
+
 ```
 
 2. Calculate Froh
