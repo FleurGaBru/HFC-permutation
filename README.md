@@ -5,6 +5,10 @@
 1. Take random set of 100, 1000, 10 000, 50 000, 100 000 SNPs
     * PLINK --thin 0.2 (a random 20% of SNPs)
     * or something else (R sample)
+```
+plink2 --allow-extra-chr --chr-set 33 --file ./data/cleaned_notstrict_hfc --thin-count 100 --make-bed --out ./analysis/plink_100
+plink2 --bfile binary_fileset --recode --out new_text_fileset
+```
 
 2. Calculate Froh
   * PLINK    --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2
