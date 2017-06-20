@@ -31,6 +31,12 @@ plink2 --allow-extra-chr --chr-set 33 --file ./data/cleaned_notstrict_hfc --thin
 plink2 --allow-extra-chr --bfile ./analysis/plink_100 --recode --out ./analysis/plink_100_recode
 # output is a map, ped and log file
 
+```
+
+2. Calculate Froh
+  * PLINK    --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2
+
+```bash
 plink2 --allow-extra-chr --chr-set 33 --file ./analysis/plink_100_recode  --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2 --out ./analysis/ROH_files_100
 # output is hom, hom.indiv and summary file
 
@@ -52,11 +58,8 @@ plink2 --allow-extra-chr --chr-set 33 --file ./analysis/plink_100_recode  --homo
 # --homozyg: Scan complete, found 0 ROH.
 # Results saved to ./analysis/ROH_files_100.hom +
 # ./analysis/ROH_files_100.hom.indiv + ./analysis/ROH_files_100.hom.summary .
-
 ```
 
-2. Calculate Froh
-  * PLINK    --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2
   * From the result files Froh = KB/genome size
   * Needs the chromosomes covered (genome size) in order to calculate Froh, varies from the sampling, if a chromosome is covered by at least 1 SNP, it is covered and added to the genome size
 
