@@ -74,7 +74,8 @@ do
 done
 
 # sum up the chromosome sizes
-cat ./Froh/chr_sizes.txt | cut -f2 | awk '{s+=$1} END {print s}'
+size=$(cat ./Froh/chr_sizes.txt | cut -f2 | awk '{s+=$1} END {print s}')
+
 ```
 3. Calculate Fhom
     * PLINK --het
