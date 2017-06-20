@@ -63,6 +63,11 @@ plink2 --allow-extra-chr --chr-set 33 --file ./analysis/plink_100_recode  --homo
   * From the result files Froh = KB/genome size
   * Needs the chromosomes covered (genome size) in order to calculate Froh, varies from the sampling, if a chromosome is covered by at least 1 SNP, it is covered and added to the genome size
 
+```bash
+
+chr=$(cat ./permutation/plink_100_recode.map | cut -f 1 | sort | uniq)
+
+```
 3. Calculate Fhom
     * PLINK --het
     * From the results Fhom = O(HOM)/N(NM)
