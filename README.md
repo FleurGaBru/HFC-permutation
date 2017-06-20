@@ -76,6 +76,10 @@ done
 # sum up the chromosome sizes
 size=$(cat ./Froh/chr_sizes.txt | cut -f2 | awk '{s+=$1} END {print s}')
 
+# remove the white spaces in the hom.indiv file and replace by tabs
+cat ./Froh/ROH_files_100.hom.indiv | sed 's/^ \+ //g' | sed 's/^ //g'| sed 's/ \+ /\t/g' | sed 's/ /\t/g' > ./Froh/ROH_files_100.hom.indiv.fixed
+
+
 ```
 3. Calculate Fhom
     * PLINK --het
