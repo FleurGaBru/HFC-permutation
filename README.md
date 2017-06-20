@@ -64,8 +64,14 @@ plink2 --allow-extra-chr --chr-set 33 --file ./analysis/plink_100_recode  --homo
   * Needs the chromosomes covered (genome size) in order to calculate Froh, varies from the sampling, if a chromosome is covered by at least 1 SNP, it is covered and added to the genome size
 
 ```bash
-
-chr=$(cat ./permutation/plink_100_recode.map | cut -f 1 | sort | uniq)
+# get the chromsome names of covered chromosomes
+chr=$(cat ./permutation/plink_100_recode.map | cut -f 1 | sort | uniq | sed 's/^/chr/g')
+touch ./Froh/chr_sizes.txt
+# get the chromsome sizes of covered chromosomes
+for i in $chr
+do
+    cat data/chr_size_gtgenome1.1_.txt | awk '/$i/' >> ./Froh/chr_sizes.txt
+done
 
 ```
 3. Calculate Fhom
