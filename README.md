@@ -8,11 +8,11 @@
 
 ```bash
 
-# First generate bed file for all permutations
+# First generate bed file for all permutations. this saves a lot of time in the nect step.
 plink2 --allow-extra-chr --chr-set 33 --file ./data/cleaned_notstrict_hfc --make-bed --out ./permutation/plink
 
 # sample a --thin-count number of SNPs
-plink2 --allow-extra-chr --chr-set 33 --file ./data/cleaned_notstrict_hfc --thin-count 100 --make-bed --out ./permutation/plink_100
+plink2 --allow-extra-chr --chr-set 33 --bfile ./permutation/plink --thin-count 100 --make-bed --out ./permutation/plink_100
 # output is bed, bim, fam and log file
 
 # 1031971 MB RAM detected; reserving 515985 MB for main workspace.
