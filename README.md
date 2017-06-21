@@ -7,7 +7,7 @@
     * or something else (R sample)
 
 ```bash
-plink2 --allow-extra-chr --chr-set 33 --file ./data/cleaned_notstrict_hfc --thin-count 100 --make-bed --out ./analysis/plink_100
+plink2 --allow-extra-chr --chr-set 33 --file ./data/cleaned_notstrict_hfc --thin-count 100 --make-bed --out ./permutation/plink_100
 # output is bed, bim, fam and log file
 
 # 1031971 MB RAM detected; reserving 515985 MB for main workspace.
@@ -28,7 +28,7 @@ plink2 --allow-extra-chr --chr-set 33 --file ./data/cleaned_notstrict_hfc --thin
 # --make-bed to ./analysis/plink_100.bed + ./analysis/plink_100.bim +
 # ./analysis/plink_100.fam ... done.
 
-plink2 --allow-extra-chr --bfile ./analysis/plink_100 --recode --out ./analysis/plink_100_recode
+plink2 --allow-extra-chr --bfile ./permutation/plink_100 --recode --out ./permutation/plink_100_recode
 # output is a map, ped and log file
 
 ```
@@ -37,7 +37,7 @@ plink2 --allow-extra-chr --bfile ./analysis/plink_100 --recode --out ./analysis/
   * PLINK    --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2
 
 ```bash
-plink2 --allow-extra-chr --chr-set 33 --file ./analysis/plink_100_recode  --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2 --out ./analysis/ROH_files_100
+plink2 --allow-extra-chr --chr-set 33 --file ./permutation/plink_100_recode  --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2 --out ./analysis/ROH_files_100
 # output is hom, hom.indiv and summary file
 
 # 1031971 MB RAM detected; reserving 515985 MB for main workspace.
