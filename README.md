@@ -37,14 +37,14 @@ plink2 --allow-extra-chr --bfile ./permutation/plink_100 --recode --out ./permut
   * PLINK    --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2
 
 ```bash
-plink2 --allow-extra-chr --chr-set 33 --file ./permutation/plink_100_recode  --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2 --out ./analysis/ROH_files_100
+plink2 --allow-extra-chr --chr-set 33 --file ./permutation/plink_100_recode  --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2 --out ./Froh/ROH_files_100
 # output is hom, hom.indiv and summary file
 
 # 1031971 MB RAM detected; reserving 515985 MB for main workspace.
 # .ped scan complete (for binary autoconversion).
 # Performing single-pass .bed write (100 variants, 2143 samples).
 # --file: ./analysis/ROH_files_100-temporary.bed +
-# ./analysis/ROH_files_100-temporary.bim + ./analysis/ROH_files_100-temporary.fam
+# ./Froh/ROH_files_100-temporary.bim + ./Froh/ROH_files_100-temporary.fam
 # written.
 # 100 variants loaded from .bim file.
 # 2143 samples (0 males, 2143 females) loaded from .fam.
@@ -57,7 +57,7 @@ plink2 --allow-extra-chr --chr-set 33 --file ./permutation/plink_100_recode  --h
 # Phenotype data is quantitative.
 # --homozyg: Scan complete, found 0 ROH.
 # Results saved to ./analysis/ROH_files_100.hom +
-# ./analysis/ROH_files_100.hom.indiv + ./analysis/ROH_files_100.hom.summary .
+# ./Froh/ROH_files_100.hom.indiv + ./Froh/ROH_files_100.hom.summary .
 ```
 
   * From the result files Froh = KB/genome size
