@@ -129,6 +129,11 @@ rm Fhom/Fhom_100_temp.txt
         * *first columns out
         * *0 -> NA
 
+```bash
+# keep all columns from 7 on and replace 0 by NA
+ cat ./permutation/plink_100_recode.ped | cut -d " " -f 7- | sed 's/0/NA/g' > ./inbreedr/input_100.txt
+```
+
 5. use command line to do the transformation
     * convert_raw
     * g2_snps
