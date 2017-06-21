@@ -7,6 +7,11 @@
     * or something else (R sample)
 
 ```bash
+
+# First generate bed file for all permutations
+plink2 --allow-extra-chr --chr-set 33 --file ./data/cleaned_notstrict_hfc --make-bed --out ./permutation/plink
+
+# sample a --thin-count number of SNPs
 plink2 --allow-extra-chr --chr-set 33 --file ./data/cleaned_notstrict_hfc --thin-count 100 --make-bed --out ./permutation/plink_100
 # output is bed, bim, fam and log file
 
