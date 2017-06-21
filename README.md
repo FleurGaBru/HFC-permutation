@@ -75,7 +75,7 @@ touch ./Froh/chr_sizes.txt
 # get the chromsome sizes of covered chromosomes
 for i in $chr
 do
-    cat data/chr_size_gtgenome1.1_.txt | awk '/$i/' >> ./Froh/chr_sizes.txt
+    cat data/chr_size_gtgenome1.1_.txt | sed 's/\t/ /g' | awk '/$i /' >> ./Froh/chr_sizes.txt
 done
 
 # sum up the chromosome sizes
