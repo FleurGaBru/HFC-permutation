@@ -114,6 +114,16 @@ plink2 --allow-extra-chr --chr-set 33 --file ./permutation/plink_100_recode --he
 
     * From the results Fhom = O(HOM)/N(NM)
 
+```bash
+# Remove the white spaces from Plink output and devide O(HOM) by N(HOM)
+cat ./Fhom/HET_files_100.het | sed 's/^ \+ //g' | sed 's/^ //g'| sed 's/ \+ /\t/g' | sed 's/ /\t/g' > ./Fhom/HET_files_100.het.fixed
+cat ./Fhom/HET_files_100.het.fixed | sed '1d' | awk '{print $3/$5}' | sed '1s/^/FHOM\n/' > ./Fhom/Fhom_100_temp.txt
+
+# Paste Fhom values to the Plink output and remove the temp file
+ paste ./Fhom/HET_files_100.het.fixed ./Fhom/Fhom_100_temp.txt > Fhom/Fhom_100.txt
+rm Fhom/Fhom_100_temp.txt
+```
+
 4. Inbreedr (R based) —> slow for 50000 or 100000
     * Ped-files need to be made ready for Inbreedr:
         * *first columns out
