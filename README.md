@@ -78,7 +78,13 @@ size=$(cat ./Froh/chr_sizes.txt | cut -f2 | awk '{s+=$1} END {print s}')
 
 # remove the white spaces in the hom.indiv file and replace by tabs
 cat ./Froh/ROH_files_100.hom.indiv | sed 's/^ \+ //g' | sed 's/^ //g'| sed 's/ \+ /\t/g' | sed 's/ /\t/g' > ./Froh/ROH_files_100.hom.indiv.fixed
-cat ./Froh/ROH_files_100.hom.indiv.fixed | awk -v x="$size" '{print $5/x}'
+
+# Devide KB by Size of the genome
+cat ./Froh/ROH_files_100.hom.indiv.fixed | awk -v x="$size" '{print $5/x}' - > ./Froh/Froh_100_temp.txt
+
+# Paste the Froh values to the ROH output and remove the temporary file
+paste ./Froh/ROH_files_100.hom.indiv.fixed ./Froh/Froh_100_temp.txt | sed '1 s/0/FROH/' > ./Froh/Froh_100.txt
+rm ./Froh/Froh_100_temp.txt
 
 ```
 3. Calculate Fhom
