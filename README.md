@@ -89,6 +89,27 @@ rm ./Froh/Froh_100_temp.txt
 ```
 3. Calculate Fhom
     * PLINK --het
+
+```
+plink2 --allow-extra-chr --chr-set 33 --file ./permutation/plink_100_recode --het --out ./Fhom/HET_files_100
+# 1031971 MB RAM detected; reserving 515985 MB for main workspace.
+# .ped scan complete (for binary autoconversion).
+# Performing single-pass .bed write (100 variants, 2143 samples).
+# --file: ./Fhom/HET_files_100-temporary.bed + ./Fhom/HET_files_100-temporary.bim
+# + ./Fhom/HET_files_100-temporary.fam written.
+# 100 variants loaded from .bim file.
+# 2143 samples (0 males, 2143 females) loaded from .fam.
+# 2143 phenotype values loaded from .fam.
+# Using 1 thread (no multithreaded calculations invoked).
+# Before main variant filters, 2143 founders and 0 nonfounders present.
+# Calculating allele frequencies... done.
+# Total genotyping rate is 0.995964.
+# 100 variants and 2143 samples pass filters and QC.
+# Phenotype data is quantitative.
+# --het: 100 variants scanned, report written to ./Fhom/HET_files_100.het .
+
+```
+
     * From the results Fhom = O(HOM)/N(NM)
 
 4. Inbreedr (R based) —> slow for 50000 or 100000
