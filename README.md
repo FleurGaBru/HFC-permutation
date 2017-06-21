@@ -92,6 +92,7 @@ rm ./Froh/Froh_100_temp.txt
 
 ```bash
 plink2 --allow-extra-chr --chr-set 33 --file ./permutation/plink_100_recode --het --out ./Fhom/HET_files_100
+# output .HET and .log file
 
 # 1031971 MB RAM detected; reserving 515985 MB for main workspace.
 # .ped scan complete (for binary autoconversion).
