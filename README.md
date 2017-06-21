@@ -33,7 +33,7 @@ plink2 --allow-extra-chr --chr-set 33 --bfile ./permutation/plink --thin-count 1
 # --make-bed to ./analysis/plink_100.bed + ./analysis/plink_100.bim +
 # ./analysis/plink_100.fam ... done.
 
-plink2 --allow-extra-chr --bfile ./permutation/plink_100 --recode --out ./permutation/plink_100_recode
+plink2 --allow-extra-chr --chr-set 33 --bfile ./permutation/plink_100 --recode --out ./permutation/plink_100_recode
 # output is a map, ped and log file
 
 ```
