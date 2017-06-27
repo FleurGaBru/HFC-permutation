@@ -92,7 +92,7 @@ foo () {
 }
 parallel --record-env
 export -f foo
-echo  {1..10} | tr " " "\n" | parallel --env _ -j5  "foo {} $n $workdir" 
+echo  {1..100} | tr " " "\n" | parallel --env _ -j5  "foo {} $n $workdir" 
 
 paste $results/out.tmp $inbreedR/out_${n}_* > $results/inbreedR_${n}.txt
 paste $results/Fhom.tmp $Fhom/Fhom_temp_${n}_* > $results/Fhom_${n}.txt
