@@ -14,4 +14,10 @@ conda create -n plink2
 source activate plink2
 conda install -c bioconda plink2=1.90b3.35
 
-# 
+cd HFC-permutation
+
+# put your ped and map file in the data directory
+# execute the pipeline
+./script-gnu.sh
+
+```
