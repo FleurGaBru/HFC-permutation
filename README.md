@@ -20,4 +20,6 @@ cd HFC-permutation
 # execute the pipeline
 ./script-gnu.sh
 
+# In the end the script concanates the output of each sampling together. You can find the output in 'results'
+
 ```
