@@ -26,7 +26,7 @@ read n
 # First generate bed file for all permutations. this saves a lot of time in the nect step.
 plink2 --allow-extra-chr --chr-set 33 --file $data/cleaned_notstrict_hfc --make-bed --out $permutation/plink
 
-for in in {1:100}
+for in in {1..100}
 do
   # sample a --thin-count number of SNPs
   plink2 --allow-extra-chr --chr-set 33 --bfile $permutation/plink --thin-count $n --make-bed --out ./permutation/plink_${n}_${i}
