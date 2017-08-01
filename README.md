@@ -13,6 +13,7 @@ git clone https://<user-name>@gitlab.bioinf.nioo.knaw.nl/pipelines/HFC-permutati
 conda create -n plink2
 source activate plink2
 conda install -c bioconda plink2=1.90b3.35
+conda install -c bioconda parallel
 
 cd HFC-permutation
 
