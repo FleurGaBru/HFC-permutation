@@ -1,14 +1,17 @@
-REPLICATE = range(1, 6)
-SAMPLES = ["cleaned_notstrict_hfc"]
+configfile: "config.yaml"
+REPLICATE = config["replicate"]
+# SAMPLES = ["cleaned_notstrict_hfc"]
+# FORMAT = ["map", "ped"]
 #change that name of initial ped/map name is given by the params. Maybe generate it automatically (look for ped/map file pair in data)
 # add the second extension (ped) to the input with expand {ext} ext=[]
 rule generate_bed:
     input:
-        "/home/NIOO.INT/fleurg/projects/2017-015/HFC_permutation/data/{sample}.map"
+        # expand("data/{sample}.{ext}", sample=config["samples"], ext=FORMAT)
+        lambda wildcards: config["samples"][wildcards.sample]
     output:
         "permutation/{sample}.bed"
     shell:
-        "plink2 --allow-extra-chr --chr-set 33 --file /home/NIOO.INT/fleurg/projects/2017-015/HFC_permutation/data/{wildcards.sample} --make-bed --out ./permutation/{wildcards.sample}"
+        "plink2 --allow-extra-chr --chr-set 33 --file ./data/{wildcards.sample} --make-bed --out ./permutation/{wildcards.sample}"
 
 # change that the number of SNPs is not hardcoded but is given in a param file
 # if you want to run this rule, you have to replcae {replicate} by a number!
@@ -16,9 +19,9 @@ rule generate_bed:
 # a range in python does not include the last number range(1,6)=[1,2,3,4,5]
 rule sample_bed:
     input:
-        "permutation/cleaned_notstrict_hfc.bed"
+        "permutation/{sample}.bed"
     output:
-        "permutation/cleaned_notstrict_hfc_1000_{replicate}.bed"
+        "permutation/{sample}_1000_{replicate}.bed"
     run:
-        for i in range(1,6):
-            shell("plink2 --allow-extra-chr --chr-set 33 --bfile ./permutation/cleaned_notstrict_hfc --thin-count 1000 --make-bed --out ./permutation/cleaned_notstrict_hfc_1000_{i}")
+        for i in {wildcards.replicate}:
+            shell("plink2 --allow-extra-chr --chr-set 33 --bfile ./permutation/{wildcards.sample} --thin-count 1000 --make-bed --out ./permutation/{wildcards.sample}_1000_{i}")
