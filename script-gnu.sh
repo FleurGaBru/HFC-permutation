@@ -63,6 +63,9 @@ foo () {
 
   # sum up the chromosome sizes
   size=$(cat ./Froh/chr_sizes_${n}_${i}.txt | cut -f2 -d " "| awk '{s+=$1} END {print s}')
+  
+  # Later the genome size has to be devided by the KB column of the ROH file. Change the genome size to KB
+  # sizeKB=$(($size/1000)) , and change $size to $sizeKB in the script below
 
   # remove the white spaces in the hom.indiv file and replace by tabs
   cat $Froh/ROH_files_${n}_${i}.hom.indiv | sed 's/^ \+ //g' | sed 's/^ //g'| sed 's/ \+ /\t/g' | sed 's/ /\t/g' > $Froh/ROH_files_${n}_${i}.hom.indiv.fixed
