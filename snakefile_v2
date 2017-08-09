@@ -27,7 +27,7 @@ rule sample_bed:
         dynamic("permutation/{prefix}.{chunk}.{ext}")
     params:
         SNP = [1000],
-        RANGE = [1, 5]
+        RANGE = [1,5]
     run:
-        for i in {1,5}:
+        for i in params.RANGE:
           shell("plink2 --allow-extra-chr --chr-set 33 --bed {input.bed} --bim {input.bim} --fam {input.fam} --thin-count {params.SNP} --make-bed --out ./permutation/{PREFIX}.{params.SNP}.{i}")
