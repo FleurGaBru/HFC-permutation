@@ -1,10 +1,5 @@
-PREFIX = ["cleaned_notstrict_hfc"]
-# RANGE = [5]
-# configfile: "config.yaml"
-# REPLICATE = config["replicate"]
-# NUMBER = config["number"]
-# SAMPLES = ["cleaned_notstrict_hfc"]
-# FORMAT = ["map", "ped"]
+configfile: "config.yaml"
+PREFIX = config["prefix"]
 #change that name of initial ped/map name is given by the params. Maybe generate it automatically (look for ped/map file pair in data)
 # add the second extension (ped) to the input with expand {ext} ext=[]
 rule generate_bed:
@@ -26,8 +21,8 @@ rule sample_bed:
     output:
         dynamic("permutation/{prefix}.{chunk}.{ext}")
     params:
-        SNP = [1000],
-        RANGE = [1,5]
+        SNP = config["snp"],
+        RANGE = config["range"]
     run:
         for i in params.RANGE:
           shell("plink2 --allow-extra-chr --chr-set 33 --bed {input.bed} --bim {input.bim} --fam {input.fam} --thin-count {params.SNP} --make-bed --out ./permutation/{PREFIX}.{params.SNP}.{i}")
