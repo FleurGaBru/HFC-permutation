@@ -1,5 +1,5 @@
 PREFIX = ["cleaned_notstrict_hfc"]
-RANGE = [range(1,6)]
+# RANGE = [5]
 # configfile: "config.yaml"
 # REPLICATE = config["replicate"]
 # NUMBER = config["number"]
@@ -11,15 +11,13 @@ rule generate_bed:
     input:
         ped= expand("data/{prefix}.ped", prefix=PREFIX),
         map= expand("data/{prefix}.map", prefix=PREFIX)
+        # expand("data/{sample}.{ext}", sample=config["samples"], ext=FORMAT)
+        # lambda wildcards: config["samples"][wildcards.sample]
     output:
         expand("permutation/{prefix}.{ext}", prefix=PREFIX, ext=["bed", "bim", "fam"])
     shell:
         "plink2 --allow-extra-chr --chr-set 33 --ped {input.ped} --map {input.map} --make-bed --out permutation/{PREFIX}"
 
-# if you want to run this rule, you have to replcae {replicate} by a number!
-# number of SNPs has to be parameter
-# a variable in a bash command in python does not require "$"
-# a range in python does not include the last number range(1,6)=[1,2,3,4,5]
 rule sample_bed:
     input:
         bed= expand("permutation/{prefix}.bed", prefix = PREFIX),
@@ -28,15 +26,8 @@ rule sample_bed:
     output:
         dynamic("permutation/{prefix}.{chunk}.{ext}")
     params:
-        SNP = [1000]
+        SNP = [1000],
+        RANGE = [1, 5]
     run:
-     for i in range(1,6):
-        shell("plink2 --allow-extra-chr --chr-set 33 --bed {input.bed} --bim {input.bim} --fam {input.fam} --thin-count {params.SNP} --make-bed --out ./permutation/{wildcards.prefix}.{i}")
-
-
-
-rule recode_bed
-    input:
-        "permutation/{sample}_1000_{replicate}.bed"
-    output:
-        "permutation/{sample_}"
+        for i in {1,5}:
+          shell("plink2 --allow-extra-chr --chr-set 33 --bed {input.bed} --bim {input.bim} --fam {input.fam} --thin-count {params.SNP} --make-bed --out ./permutation/{PREFIX}.{params.SNP}.{i}")
