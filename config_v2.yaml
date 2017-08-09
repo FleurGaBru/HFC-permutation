@@ -1,0 +1,6 @@
+prefix:
+    "cleaned_notstrict_hfc"
+snp:
+    1000
+range:
+    [1, 2, 3, 4, 5]
