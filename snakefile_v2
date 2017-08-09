@@ -13,7 +13,7 @@ rule generate_bed:
     shell:
         "plink2 --allow-extra-chr --chr-set 33 --ped {input.ped} --map {input.map} --make-bed --out permutation/{PREFIX}"
 
-rule sample_bed:
+rule create_thinned_plink:
     input:
         bed= expand("permutation/{prefix}.bed", prefix = PREFIX),
         bim= expand("permutation/{prefix}.bim", prefix = PREFIX),
@@ -26,3 +26,4 @@ rule sample_bed:
     run:
         for i in range(1, params.RANGE):
           shell("plink2 --allow-extra-chr --chr-set 33 --bed {input.bed} --bim {input.bim} --fam {input.fam} --thin-count {params.SNP} --make-bed --out ./permutation/{PREFIX}.{params.SNP}.{i}")
+          shell("plink2 --allow-extra-chr --chr-set 33 --bfile ./permutation/{PREFIX}.{params.SNP}.{i} --recode --out ./permutation/{PREFIX}.{params.SNP}.{i}")
