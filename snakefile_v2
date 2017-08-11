@@ -33,12 +33,13 @@ rule calculate_Froh:
         map= "permutation/{prefix}.map",
         ped= "permutation/{prefix}.ped"
     output:
-        "Froh/ROH.{prefix}.{ext}"
+        "Froh/ROH.{prefix}.fixed.hom.indiv"
     params:
         "Froh/ROH.{prefix}"
-    shell:
-        "plink2 --allow-extra-chr --chr-set 33 --ped {input.ped} --map {input.map} --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2 --out {params}"
-
+    shell:"""
+        plink2 --allow-extra-chr --chr-set 33 --ped {input.ped} --map {input.map} --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2 --out {params}
+        cat {params}.hom.indiv | sed 's/^ \+ //g' | sed 's/^ //g'| sed 's/ \+ /\t/g' | sed 's/ /\t/g' > {output}
+        """
 #rule get_chr:
 #    input:
 #      map= "permutation/{prefix}.map"
@@ -65,3 +66,5 @@ rule chr_size:
         cat {input.chr} | sed 's/\t/ /g' | grep \"$k \" >> {output}
       done
       """
+
+  
