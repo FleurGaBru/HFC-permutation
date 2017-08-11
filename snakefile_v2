@@ -28,7 +28,7 @@ rule create_thinned_plink:
           shell("plink2 --allow-extra-chr --chr-set 33 --bed {input.bed} --bim {input.bim} --fam {input.fam} --thin-count {SNP} --make-bed --out ./permutation/{PREFIX}.{SNP}.{i}")
           shell("plink2 --allow-extra-chr --chr-set 33 --bfile ./permutation/{PREFIX}.{SNP}.{i} --recode --out ./permutation/{PREFIX}.{SNP}.{i}")
 
-rule calculate_Froh:
+rule make_ROH:
     input:
         map= "permutation/{prefix}.map",
         ped= "permutation/{prefix}.ped"
@@ -52,7 +52,7 @@ rule calculate_Froh:
 #      """
 
 # use \\ as escape with "", otherwise snakemake gives an syntax error
-rule chr_size:
+rule covered_chr:
     input:
       chr= "data/chr_size_gtgenome1.1_.txt",
       map= "permutation/{prefix}.map"
@@ -67,4 +67,18 @@ rule chr_size:
       done
       """
 
-  
+rule calculate_Froh:
+    input:
+      chr= "scratch/chrsizes.{prefix}.txt",
+      ROH= "Froh/ROH.{prefix}.fixed.hom.indiv"
+    output:
+      "Froh/Froh.{prefix}.txt"
+    params:
+      temp= "scratch/Froh.temp.{prefix}.txt",
+      header= "{prefix}"
+    shell:"""
+      size=$(cat {input.chr} | cut -f2 -d \" \"| awk '{{s+=$1}} END {{print s}}')
+      sizeKB=$(($size/1000))
+      cat {input.ROH} | awk -v x="$sizeKB" '{{print $5/x}}' | sed '1 s/0/{params.header}/'  > {params.temp}
+      paste {input.ROH} {params.temp} | sed '1 s/{params.header}/FROH.{params.header}/' > {output}
+      """
