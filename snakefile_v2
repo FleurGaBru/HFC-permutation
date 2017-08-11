@@ -82,3 +82,30 @@ rule calculate_Froh:
       cat {input.ROH} | awk -v x="$sizeKB" '{{print $5/x}}' | sed '1 s/0/{params.header}/'  > {params.temp}
       paste {input.ROH} {params.temp} | sed '1 s/{params.header}/FROH.{params.header}/' > {output}
       """
+
+rule get_HET_files:
+    input:
+        map= "permutation/{prefix}.map",
+        ped= "permutation/{prefix}.ped"
+    output:
+        "Fhom/HET_files.{prefix}.fixed.het"
+    params:
+        "Fhom/HET_files.{prefix}"
+    shell:"""
+        plink2 --allow-extra-chr --chr-set 33 --ped {input.ped} --map {input.map} --het --out {params}
+        cat {params}.het | sed 's/^ \+ //g' | sed 's/^ //g'| sed 's/ \+ /\t/g' | sed 's/ /\t/g' > {output}
+        """
+
+#does not work yet
+rule calculate_Fhom:
+    input:
+        "Fhom/HET_files.{prefix}.fixed.het"
+    output:
+        "Fhom/Fhom.{prefix}.txt"
+    params:
+        header= "{prefix}",
+        temp= "Fhom/Fhom_temp.{prefix}.txt"
+    shell:"""
+        cat {input} | sed '1d' | awk '{{print $3/$5}}' | sed '1s/^/{params.header}\n/' > {params.temp}
+        paste {input} {params.temp} > {output}
+        """
