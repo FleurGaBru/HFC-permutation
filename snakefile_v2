@@ -1,3 +1,4 @@
+##SNAKEMAKE DOES NOT LIKE "" IN SHELL COMMANDS!!!!!!!!
 configfile: "config.yaml"
 SNP = config["snp"]
 PREFIX = config["prefix"]
@@ -37,3 +38,30 @@ rule calculate_Froh:
         "Froh/ROH.{prefix}"
     shell:
         "plink2 --allow-extra-chr --chr-set 33 --ped {input.ped} --map {input.map} --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2 --out {params}"
+
+#rule get_chr:
+#    input:
+#      map= "permutation/{prefix}.map"
+#    output:
+#      "scratch/chr.{prefix}.txt"
+#    params:
+#      chr= "scratch/chrsizes.{prefix}.txt"
+#      cat {input.map} | cut -f 1 | sort | uniq | sed 's/^/chr/g' > {output}
+#    touch {params.chr}
+#      """
+
+# use \\ as escape with "", otherwise snakemake gives an syntax error
+rule chr_size:
+    input:
+      chr= "data/chr_size_gtgenome1.1_.txt",
+      map= "permutation/{prefix}.map"
+    output:
+      "scratch/chrsizes.{prefix}.txt"
+    shell:"""
+      chr=$(cat {input.map} | cut -f 1 | sort | uniq | sed 's/^/chr/g')
+      touch {output}
+      for k in $chr
+      do
+        cat {input.chr} | sed 's/\t/ /g' | grep \"$k \" >> {output}
+      done
+      """
