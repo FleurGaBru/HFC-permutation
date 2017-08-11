@@ -1,10 +1,13 @@
 ##SNAKEMAKE DOES NOT LIKE "" IN SHELL COMMANDS!!!!!!!!
+##Naming a params in delivers a syntax error
 configfile: "config.yaml"
 SNP = config["snp"]
 PREFIX = config["prefix"]
 RANGE = config["range"]
 #change that name of initial ped/map name is given by the params. Maybe generate it automatically (look for ped/map file pair in data)
 # add the second extension (ped) to the input with expand {ext} ext=[]
+rule all:
+
 rule generate_bed:
     input:
         ped= expand("data/{prefix}.ped", prefix=PREFIX),
@@ -96,7 +99,7 @@ rule get_HET_files:
         cat {params}.het | sed 's/^ \+ //g' | sed 's/^ //g'| sed 's/ \+ /\t/g' | sed 's/ /\t/g' > {output}
         """
 
-#does not work yet
+#sed statement needs \ in front of \n as an escape. Otherwise shell command is split and does not work.
 rule calculate_Fhom:
     input:
         "Fhom/HET_files.{prefix}.fixed.het"
@@ -106,6 +109,28 @@ rule calculate_Fhom:
         header= "{prefix}",
         temp= "Fhom/Fhom_temp.{prefix}.txt"
     shell:"""
-        cat {input} | sed '1d' | awk '{{print $3/$5}}' | sed '1s/^/{params.header}\n/' > {params.temp}
+        cat {input} | sed '1d' | awk '{{print $3/$5}}' | sed '1s/^/{params.header}\\n/' > {params.temp}
         paste {input} {params.temp} > {output}
         """
+
+rule inbreedR:
+      input:
+          "permutation/{prefix}.ped"
+      output:
+          "inbreedR/out.{prefix}.txt"
+      params:
+          inR= "inbreedR/input.{prefix}.txt",
+          header= "{prefix}"
+      shell:"""
+          cat {input} | cut -d \" \" -f 7- | sed 's/0/NA/g' > {params.inR}
+          /usr/bin/Rscript ./script-p.r {params.inR} {output}
+          sed -i 's/x/{params.header}/' {output}
+          """
+
+#rule run_inbreedR:
+#          "inbreedR/input.{prefix}.txt"
+#      output:
+#          "inbreedR/out.{prefix}.txt"
+#      shell:
+#          "/usr/bin/Rscript ./script-p.r {input} {output}"
+#
