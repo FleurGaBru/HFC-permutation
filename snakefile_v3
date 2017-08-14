@@ -1,0 +1,35 @@
+## New version because {prefix} in v2 expects a prefix being invoced via the set output file on the command line. This approache crashes when adding a rule all.
+##SNAKEMAKE DOES NOT LIKE "" IN SHELL COMMANDS!!!!!!!!
+##Naming a params in delivers a syntax error
+configfile: "config.yaml"
+SNP = str(config["snp"])
+PREFIX = config["prefix"]
+RANGE = range(1,config["range"])
+END= str(config["range"]-1)
+
+rule all:
+    input:
+        expand("permutation/{prefix}.{snp}.{range}.{ext}", prefix=PREFIX, snp=SNP, range=RANGE, ext=["ped", "map"])
+
+rule generate_bed:
+    input:
+        ped= os.path.join("data", PREFIX + ".ped"),
+        map= os.path.join("data", PREFIX + ".map")
+    output:
+        expand("permutation/{prefix}.{ext}", prefix=PREFIX, ext=["bed", "bim", "fam"])
+    params:
+        os.path.join("permutation", PREFIX)
+    shell:
+        "plink2 --allow-extra-chr --chr-set 33 --ped {input.ped} --map {input.map} --make-bed --out {params[0]}"
+
+rule create_thinned_plink:
+    input:
+        bed= os.path.join("permutation", PREFIX + ".bed"),
+        bim= os.path.join("permutation", PREFIX + ".bim"),
+        fam= os.path.join("permutation", PREFIX + ".fam")
+    output:
+        expand("permutation/{prefix}.{snp}.{range}.{ext}", prefix=PREFIX, snp=SNP, range=RANGE, ext=["ped", "map"])
+    run:
+        for i in RANGE:
+          shell("plink2 --allow-extra-chr --chr-set 33 --bed {input.bed} --bim {input.bim} --fam {input.fam} --thin-count {SNP} --make-bed --out ./permutation/{PREFIX}.{SNP}.{i}")
+          shell("plink2 --allow-extra-chr --chr-set 33 --bfile ./permutation/{PREFIX}.{SNP}.{i} --recode --out ./permutation/{PREFIX}.{SNP}.{i}")
