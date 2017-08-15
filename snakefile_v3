@@ -4,12 +4,15 @@
 configfile: "config.yaml"
 SNP = str(config["snp"])
 PREFIX = config["prefix"]
-RANGE = range(1,config["range"])
+RANGE = map(str, range(1,config["range"]))
+RANGE_INT = range(1,config["range"])
 END= str(config["range"]-1)
+
+import os
 
 rule all:
     input:
-        expand("permutation/{prefix}.{snp}.{range}.{ext}", prefix=PREFIX, snp=SNP, range=RANGE, ext=["ped", "map"])
+        expand("Froh/ROH.{prefix}.{snp}.{range}.fixed.hom.indiv", prefix=PREFIX, snp=SNP, range=RANGE)
 
 rule generate_bed:
     input:
@@ -28,8 +31,24 @@ rule create_thinned_plink:
         bim= os.path.join("permutation", PREFIX + ".bim"),
         fam= os.path.join("permutation", PREFIX + ".fam")
     output:
-        expand("permutation/{prefix}.{snp}.{range}.{ext}", prefix=PREFIX, snp=SNP, range=RANGE, ext=["ped", "map"])
+        "permutation/{prefix}.ped", "permutation/{prefix}.map"
+    params:
+        "permutation/{prefix}"
     run:
-        for i in RANGE:
+        for i in RANGE_INT:
           shell("plink2 --allow-extra-chr --chr-set 33 --bed {input.bed} --bim {input.bim} --fam {input.fam} --thin-count {SNP} --make-bed --out ./permutation/{PREFIX}.{SNP}.{i}")
           shell("plink2 --allow-extra-chr --chr-set 33 --bfile ./permutation/{PREFIX}.{SNP}.{i} --recode --out ./permutation/{PREFIX}.{SNP}.{i}")
+
+
+rule make_ROH:
+    input:
+        map= "permutation/{prefix}.map",
+        ped= "permutation/{prefix}.ped"
+    output:
+      "Froh/ROH.{prefix}.fixed.hom.indiv"
+    params:
+        "Froh/ROH.{prefix}"
+    shell:"""
+        plink2 --allow-extra-chr --chr-set 33 --ped {input.ped} --map {input.map} --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2 --out {params}
+        cat {params}.hom.indiv | sed 's/^ \+ //g' | sed 's/^ //g'| sed 's/ \+ /\t/g' | sed 's/ /\t/g' > {output}
+        """
