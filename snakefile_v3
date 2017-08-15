@@ -12,11 +12,13 @@ import os
 
 rule all:
     input:
-        #expand("Froh/ROH.{prefix}.{snp}.{range}.fixed.hom.indiv", prefix=PREFIX, snp=SNP, range=RANGE)
         expand("scratch/Froh.temp.{prefix}.{snp}.{range}.txt", prefix=PREFIX, snp=SNP, range=RANGE),
         expand("results/Froh.{prefix}.{snp}.{end}.txt", prefix=PREFIX, snp=SNP, end=END),
         expand("scratch/Fhom.temp.{prefix}.{snp}.{range}.txt", prefix=PREFIX, snp=SNP, range=RANGE),
-        expand("results/Fhom.{prefix}.{snp}.{end}.txt", prefix=PREFIX, snp=SNP, end=END)
+        expand("results/Fhom.{prefix}.{snp}.{end}.txt", prefix=PREFIX, snp=SNP, end=END),
+        expand("inbreedR/output.{prefix}.{snp}.{range}.txt", prefix=PREFIX, snp=SNP, range=RANGE),
+        expand("results/inbreedR.{prefix}.{snp}.{end}.txt", prefix=PREFIX, snp=SNP, end=END)
+
 rule generate_bed:
     input:
         ped= os.path.join("data", PREFIX + ".ped"),
@@ -129,6 +131,31 @@ rule concanate_Fhom:
         expand("results/Fhom.{prefix}.{snp}.{end}.txt", prefix=PREFIX, snp=SNP, end=END)
     params:
         "docs/Fhom.tmp"
+    shell:"""
+        paste {params} {input} > {output}
+        """
+
+rule run_inbreedR:
+    input:
+        "permutation/{prefix}.ped"
+    output:
+        "inbreedR/output.{prefix}.txt"
+    params:
+        inR= "inbreedR/input.{prefix}.txt",
+        header= "{prefix}"
+    shell:"""
+        cat {input} | cut -d \" \" -f 7- | sed 's/0/NA/g' > {params.inR}
+        /usr/bin/Rscript ./script-p.r {params.inR} {output}
+        sed -i 's/x/{params.header}/' {output}
+        """
+
+rule concanate_inbreedR:
+    input:
+        expand("inbreedR/output.{prefix}.{snp}.{range}.txt", prefix=PREFIX, snp=SNP, range=RANGE_INT)
+    output:
+        expand("results/inbreedR.{prefix}.{snp}.{end}.txt", prefix=PREFIX, snp=SNP, end=END)
+    params:
+        "docs/inbreedR.tmp"
     shell:"""
         paste {params} {input} > {output}
         """
