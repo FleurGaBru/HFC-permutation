@@ -1,5 +1,6 @@
-samples:
-    cleaned_notstrict_hfc: data/cleaned_notstrict_hfc.map
-
-replicate:
-    range(1, 6)
+prefix:
+    "cleaned_notstrict_hfc"
+snp:
+    1000
+range:
+    6

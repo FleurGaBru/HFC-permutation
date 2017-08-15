@@ -1,0 +1,158 @@
+##SNAKEMAKE DOES NOT LIKE "" IN SHELL COMMANDS!!!!!!!!
+##Naming a params in delivers a syntax error
+configfile: "config.yaml"
+SNP = config["snp"]
+PREFIX = config["prefix"]
+RANGE = config["range"]
+#change that name of initial ped/map name is given by the params. Maybe generate it automatically (look for ped/map file pair in data)
+# add the second extension (ped) to the input with expand {ext} ext=[]
+
+rule all:
+    input:
+        "Froh/Froh.{prefix}.txt",
+        "Fhom/Fhom.{prefix}.txt",
+        "inbreedR/out.{prefix}.txt"
+
+rule generate_bed:
+    input:
+        ped= expand("data/{prefix}.ped", prefix=PREFIX),
+        map= expand("data/{prefix}.map", prefix=PREFIX)
+        # expand("data/{sample}.{ext}", sample=config["samples"], ext=FORMAT)
+        # lambda wildcards: config["samples"][wildcards.sample]
+    output:
+        expand("permutation/{prefix}.{ext}", prefix=PREFIX, ext=["bed", "bim", "fam"])
+    shell:
+        "plink2 --allow-extra-chr --chr-set 33 --ped {input.ped} --map {input.map} --make-bed --out permutation/{PREFIX}"
+
+rule create_thinned_plink:
+    input:
+        bed= expand("permutation/{prefix}.bed", prefix = PREFIX),
+        bim= expand("permutation/{prefix}.bim", prefix = PREFIX),
+        fam= expand("permutation/{prefix}.fam", prefix = PREFIX)
+    output:
+        dynamic("permutation/{prefix}.{chunk}.{ext}")
+    run:
+        for i in range(1, RANGE):
+          shell("plink2 --allow-extra-chr --chr-set 33 --bed {input.bed} --bim {input.bim} --fam {input.fam} --thin-count {SNP} --make-bed --out ./permutation/{PREFIX}.{SNP}.{i}")
+          shell("plink2 --allow-extra-chr --chr-set 33 --bfile ./permutation/{PREFIX}.{SNP}.{i} --recode --out ./permutation/{PREFIX}.{SNP}.{i}")
+
+rule make_ROH:
+    input:
+        map= "permutation/{prefix}.map",
+        ped= "permutation/{prefix}.ped"
+    output:
+        "Froh/ROH.{prefix}.fixed.hom.indiv"
+    params:
+        "Froh/ROH.{prefix}"
+    shell:"""
+        plink2 --allow-extra-chr --chr-set 33 --ped {input.ped} --map {input.map} --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2 --out {params}
+        cat {params}.hom.indiv | sed 's/^ \+ //g' | sed 's/^ //g'| sed 's/ \+ /\t/g' | sed 's/ /\t/g' > {output}
+        """
+#rule get_chr:
+#    input:
+#      map= "permutation/{prefix}.map"
+#    output:
+#      "scratch/chr.{prefix}.txt"
+#    params:
+#      chr= "scratch/chrsizes.{prefix}.txt"
+#      cat {input.map} | cut -f 1 | sort | uniq | sed 's/^/chr/g' > {output}
+#    touch {params.chr}
+#      """
+
+# use \\ as escape with "", otherwise snakemake gives an syntax error
+rule covered_chr:
+    input:
+      chr= "data/chr_size_gtgenome1.1_.txt",
+      map= "permutation/{prefix}.map"
+    output:
+      "scratch/chrsizes.{prefix}.txt"
+    shell:"""
+      chr=$(cat {input.map} | cut -f 1 | sort | uniq | sed 's/^/chr/g')
+      touch {output}
+      for k in $chr
+      do
+        cat {input.chr} | sed 's/\t/ /g' | grep \"$k \" >> {output}
+      done
+      """
+
+#rule calculate_Froh:
+#    input:
+#      chr= "scratch/chrsizes.{prefix}.txt",
+#      ROH= "Froh/ROH.{prefix}.fixed.hom.indiv"
+#    output:
+#      "Froh/Froh.{prefix}.txt"
+#    params:
+#      temp= "scratch/Froh.temp.{prefix}.txt",
+#    shell:"""
+#    sizeKB=$(($size/1000))
+#      cat {input.ROH} | awk -v x="$sizeKB" '{{print $5/x}}' | sed '1 s/0/{params.header}/'  > {params.temp}
+#      paste {input.ROH} {params.temp} | sed '1 s/{params.header}/FROH.{params.header}/' > {output}
+#      """
+
+rule calculate_Froh:
+    input:
+      chr= "scratch/chrsizes.{prefix}.txt",
+      ROH= "Froh/ROH.{prefix}.fixed.hom.indiv"
+    output:
+      expand("Froh/Froh.{prefix}.{range}.{snp}.txt", prefix=PREFIX, range=RANGE, snp=SNP)
+    params:
+      temp= "scratch/Froh.temp.{prefix}.txt",
+      header= "{prefix}",
+      indiv= "Froh/Froh.{prefix}.txt"
+    shell:"""
+      size=$(cat {input.chr} | cut -f2 -d \" \"| awk '{{s+=$1}} END {{print s}}')
+      sizeKB=$(($size/1000))
+      cat {input.ROH} | awk -v x="$sizeKB" '{{print $5/x}}' | sed '1 s/0/{params.header}/'  > {params.temp}
+      paste {input.ROH} {params.temp} | sed '1 s/{params.header}/FROH.{params.header}/' > {params.indiv}
+      paste $results/Froh.tmp $Froh/Froh_temp_${n}_* > $results/Froh_${n}.txt
+      paste <(cut -f1 {input.ROH}) {params.temp} > {output}
+      """
+
+rule get_HET_files:
+    input:
+        map= "permutation/{prefix}.map",
+        ped= "permutation/{prefix}.ped"
+    output:
+        "Fhom/HET_files.{prefix}.fixed.het"
+    params:
+        "Fhom/HET_files.{prefix}"
+    shell:"""
+        plink2 --allow-extra-chr --chr-set 33 --ped {input.ped} --map {input.map} --het --out {params}
+        cat {params}.het | sed 's/^ \+ //g' | sed 's/^ //g'| sed 's/ \+ /\t/g' | sed 's/ /\t/g' > {output}
+        """
+
+#sed statement needs \ in front of \n as an escape. Otherwise shell command is split and does not work.
+rule calculate_Fhom:
+    input:
+        "Fhom/HET_files.{prefix}.fixed.het"
+    output:
+        "Fhom/Fhom.{prefix}.txt"
+    params:
+        header= "{prefix}",
+        temp= "Fhom/Fhom_temp.{prefix}.txt"
+    shell:"""
+        cat {input} | sed '1d' | awk '{{print $3/$5}}' | sed '1s/^/{params.header}\\n/' > {params.temp}
+        paste {input} {params.temp} > {output}
+        """
+
+rule inbreedR:
+      input:
+          "permutation/{prefix}.ped"
+      output:
+          "inbreedR/out.{prefix}.txt"
+      params:
+          inR= "inbreedR/input.{prefix}.txt",
+          header= "{prefix}"
+      shell:"""
+          cat {input} | cut -d \" \" -f 7- | sed 's/0/NA/g' > {params.inR}
+          /usr/bin/Rscript ./script-p.r {params.inR} {output}
+          sed -i 's/x/{params.header}/' {output}
+          """
+
+#rule run_inbreedR:
+#          "inbreedR/input.{prefix}.txt"
+#      output:
+#          "inbreedR/out.{prefix}.txt"
+#      shell:
+#          "/usr/bin/Rscript ./script-p.r {input} {output}"
+#
