@@ -12,8 +12,9 @@ import os
 
 rule all:
     input:
-        expand("Froh/ROH.{prefix}.{snp}.{range}.fixed.hom.indiv", prefix=PREFIX, snp=SNP, range=RANGE)
-
+        #expand("Froh/ROH.{prefix}.{snp}.{range}.fixed.hom.indiv", prefix=PREFIX, snp=SNP, range=RANGE)
+        expand("scratch/Froh.temp.{prefix}.{snp}.{range}.txt", prefix=PREFIX, snp=SNP, range=RANGE),
+        expand("results/Froh.{prefix}.{snp}.{end}.txt", prefix=PREFIX, snp=SNP, end=END)
 rule generate_bed:
     input:
         ped= os.path.join("data", PREFIX + ".ped"),
@@ -39,16 +40,57 @@ rule create_thinned_plink:
           shell("plink2 --allow-extra-chr --chr-set 33 --bed {input.bed} --bim {input.bim} --fam {input.fam} --thin-count {SNP} --make-bed --out ./permutation/{PREFIX}.{SNP}.{i}")
           shell("plink2 --allow-extra-chr --chr-set 33 --bfile ./permutation/{PREFIX}.{SNP}.{i} --recode --out ./permutation/{PREFIX}.{SNP}.{i}")
 
-
 rule make_ROH:
     input:
         map= "permutation/{prefix}.map",
         ped= "permutation/{prefix}.ped"
     output:
-      "Froh/ROH.{prefix}.fixed.hom.indiv"
+        "Froh/ROH.{prefix}.fixed.hom.indiv"
     params:
         "Froh/ROH.{prefix}"
     shell:"""
         plink2 --allow-extra-chr --chr-set 33 --ped {input.ped} --map {input.map} --homozyg --homozyg-window-snp 5 --homozyg-density 100 --homozyg-gap 1000 --homozyg-kb 100 --homozyg-snp 25 --homozyg-window-het 0 --homozyg-window-missing 2 --out {params}
         cat {params}.hom.indiv | sed 's/^ \+ //g' | sed 's/^ //g'| sed 's/ \+ /\t/g' | sed 's/ /\t/g' > {output}
+        """
+
+# use \\ as escape with "", otherwise snakemake gives an syntax error
+rule covered_chr:
+    input:
+        chr= "data/chr_size_gtgenome1.1_.txt",
+        map= "permutation/{prefix}.map"
+    output:
+        "scratch/chrsizes.{prefix}.txt"
+    shell:"""
+        chr=$(cat {input.map} | cut -f 1 | sort | uniq | sed 's/^/chr/g')
+        touch {output}
+        for k in $chr
+        do
+          cat {input.chr} | sed 's/\t/ /g' | grep \"$k \" >> {output}
+        done
+        """
+
+rule calculate_Froh:
+    input:
+        chr= "scratch/chrsizes.{prefix}.txt",
+        ROH= "Froh/ROH.{prefix}.fixed.hom.indiv"
+    output:
+        temp= "scratch/Froh.temp.{prefix}.txt"
+    params:
+        header= "{prefix}"
+    shell:"""
+        size=$(cat {input.chr} | cut -f2 -d \" \"| awk '{{s+=$1}} END {{print s}}')
+        sizeKB=$(($size/1000))
+        cat {input.ROH} | awk -v x="$sizeKB" '{{print $5/x}}' | sed '1 s/0/{params.header}/'  > {output.temp}
+        """
+
+# here range has to be integers! Otherwise input will not be recognized. This rule needs the Froh.temp output. This one also has to go to the rule all!
+rule concanate_Froh:
+    input:
+        expand("scratch/Froh.temp.{prefix}.{snp}.{range}.txt", prefix=PREFIX, snp=SNP, range=RANGE_INT)
+    output:
+        expand("results/Froh.{prefix}.{snp}.{end}.txt", prefix=PREFIX, snp=SNP, end=END)
+    params:
+        "docs/Froh.tmp"
+    shell:"""
+        paste {params} {input} > {output}
         """
