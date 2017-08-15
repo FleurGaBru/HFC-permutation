@@ -14,7 +14,9 @@ rule all:
     input:
         #expand("Froh/ROH.{prefix}.{snp}.{range}.fixed.hom.indiv", prefix=PREFIX, snp=SNP, range=RANGE)
         expand("scratch/Froh.temp.{prefix}.{snp}.{range}.txt", prefix=PREFIX, snp=SNP, range=RANGE),
-        expand("results/Froh.{prefix}.{snp}.{end}.txt", prefix=PREFIX, snp=SNP, end=END)
+        expand("results/Froh.{prefix}.{snp}.{end}.txt", prefix=PREFIX, snp=SNP, end=END),
+        expand("scratch/Fhom.temp.{prefix}.{snp}.{range}.txt", prefix=PREFIX, snp=SNP, range=RANGE),
+        expand("results/Fhom.{prefix}.{snp}.{end}.txt", prefix=PREFIX, snp=SNP, end=END)
 rule generate_bed:
     input:
         ped= os.path.join("data", PREFIX + ".ped"),
@@ -91,6 +93,42 @@ rule concanate_Froh:
         expand("results/Froh.{prefix}.{snp}.{end}.txt", prefix=PREFIX, snp=SNP, end=END)
     params:
         "docs/Froh.tmp"
+    shell:"""
+        paste {params} {input} > {output}
+        """
+
+rule get_HET_files:
+    input:
+        map= "permutation/{prefix}.map",
+        ped= "permutation/{prefix}.ped"
+    output:
+        "Fhom/HET_files.{prefix}.fixed.het"
+    params:
+        "Fhom/HET_files.{prefix}"
+    shell:"""
+        plink2 --allow-extra-chr --chr-set 33 --ped {input.ped} --map {input.map} --het --out {params}
+        cat {params}.het | sed 's/^ \+ //g' | sed 's/^ //g'| sed 's/ \+ /\t/g' | sed 's/ /\t/g' > {output}
+        """
+
+#sed statement needs \ in front of \n as an escape. Otherwise shell command is split and does not work.
+rule calculate_Fhom:
+    input:
+        "Fhom/HET_files.{prefix}.fixed.het"
+    output:
+        temp= "scratch/Fhom.temp.{prefix}.txt"
+    params:
+        header= "{prefix}"
+    shell:"""
+        cat {input} | sed '1d' | awk '{{print $3/$5}}' | sed '1s/^/{params.header}\\n/' > {output.temp}
+        """
+
+rule concanate_Fhom:
+    input:
+        expand("scratch/Fhom.temp.{prefix}.{snp}.{range}.txt", prefix=PREFIX, snp=SNP, range=RANGE_INT)
+    output:
+        expand("results/Fhom.{prefix}.{snp}.{end}.txt", prefix=PREFIX, snp=SNP, end=END)
+    params:
+        "docs/Fhom.tmp"
     shell:"""
         paste {params} {input} > {output}
         """
