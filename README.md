@@ -69,7 +69,7 @@ This file contains this file with general information about how to run this pipe
 
 Place your plink .ped and .map file here. Also contains a file with the length of all chromosomes. If you do not use great tip, please replace it by the appropriate values but save the file under the same name.
 
-##### The `docs` directory
+##### The `src` directory
 
 Contains templates for the concatenated results file. Templates for the Froh and Fhom output `Froh.tmp` and `Fhom.tmp` contain a single column with all family ID names. The template for inbreedR `inbreedR.tmp` contains a single column with all values calculated by the package (g2, g2_p_val, g2_se, mean_HCC, sd_HCC). Please adjust the files appropriately, before running the pipeline.
 
@@ -108,37 +108,28 @@ Start the pipeline
 ------------------
 
 1. Activate the snake environment (see [Prerequisites](#prerequisites) for detailed instructions).
-
 ```
 source activate plink2
 ```
 
 2. Adjust or create input files in the `data` directory.
-
 see [Directories](#directories)
 
 3. Adjust `config.yaml`
-
 Open and adjust the config file, appropriately:
-
 ```
 nano config.yaml
-```
-
 prefix: The basename of your .ped and .map files in data
 snp: The number of SNP's you want to sample, randomly.
-range: The number of times you want to sample. 
+range: The number of times you want to sample.
+```
 
 4. Execute the pipeline
-
 Make sure that you are in the executive directory `HFC-permutation` and perform a dry run:
-
 ```
 snakemake -np
 ```
-
 If everything looks fine, run the pipeline with:
-
 ```
 snakemake -p
 ```
