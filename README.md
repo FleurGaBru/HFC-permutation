@@ -107,18 +107,18 @@ source deactivate
 Start the pipeline
 ------------------
 
-1. Activate the snake environment
+##### Activate the snake environment
 
 (see [Prerequisites](#prerequisites) for detailed instructions).
 ```
 source activate plink2
 ```
 
-2. Adjust or create input files in the `data` directory.
+##### Adjust or create input files in the `data` directory.
 
 see [Directories](#directories)
 
-3. Adjust `config.yaml`
+##### Adjust `config.yaml`
 
 Open and adjust the config file, appropriately:
 ```
@@ -128,7 +128,7 @@ snp: The number of SNP's you want to sample, randomly.
 range: The number of times you want to sample.
 ```
 
-4. Execute the pipeline
+##### Execute the pipeline
 
 Make sure that you are in the executive directory `HFC-permutation` and perform a dry run:
 ```
