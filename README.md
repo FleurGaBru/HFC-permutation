@@ -31,10 +31,14 @@ Text in brackets "<>" indicates that you have to replace it and the brackets by 
 Introduction
 ------------
 
-With this pipeline you perform a permutation analysis of the heterozygosity–fitness correlation (HFC) of a population. This pipeline was generated to serve the analysis of a great tit population and to sample a x number of SNPs randomly for a 100 times from .map and .ped input files. The pipeline results in three main output tables:
-1. Plink generated Froh values for each SNP sample of size x
-2. Plink generated Fhom values for each SNP sample of size x
-3. inbreedR generated values for each SNP sample of size x. You can check the invoked R file script `script-p.r` for more details.
+Investigating inbreeding depression has a long history in the fields of ecology, evolution, and conservation biology. However, many of the conclusions remain controversial and especially our understanding of the underlying genetic mechanisms of inbreeding depression in the wild is limited. It has been shown that marker number can be an important factor to be considered. Furthermore, the development and availability of high-throughput genetic data has made a more precise measurement of inbreeding of many species feasible. With this permutation script it is possible to study how different heterozygosity measurements vary in your dataset when you change the amount of SNPs in the input file. The two heterozygosity measurements are runs of homozygosity (FROH) and proportion of homozygous loci (FHOM). These are calculated with the program PLINK. Furthermore, the identity disequilibrium (ID) is calculated from the data. ID is the covariance in heterozygosity among markers within individuals, which should reflect identity by descent (IBD) of those markers i.e. how well heterozygosity-fitness correlations are detected. It can be calculated in two different ways: two-locus heterozygosity disequilibrium (g2) and heterozygosity-heterozygosity correlation (HHC). These calculations are done with program Inbreedr. 
+
+Plink: Purcell et al. 2007. Am. J. Hum. Genet. 81:559-575.
+
+Inbreedr: Stoffel et al. 2016. Methods Ecol. Evol. 7:1331-1339.
+
+More about ID: David et al. 2007. Mol. Ecol. 16:2474–2487.
+
 
 Login on the server
 ------------------
