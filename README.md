@@ -71,7 +71,7 @@ This file contains this file with general information about how to run this pipe
 
 ##### The `data` directory
 
-Place your plink .ped and .map file here. Also contains a file with the length of all chromosomes. If you do not use great tip, please replace it by the appropriate values but save the file under the same name.
+Place your plink .ped and .map file here. Also contains a file with the length of all chromosomes. If you do not use great tit, please replace it by the appropriate values but save the file under the same name.
 
 ##### The `src` directory
 
