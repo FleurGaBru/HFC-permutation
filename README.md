@@ -3,7 +3,6 @@ Contents
 
 * [How to use this file](#how-to-use-this-file)
 * [Introduction](#introduction)
-* [Login on the server](#login-on-the-server)
 * [Copying the pipeline](#copying-the-pipeline)
 * [Directories](#directories)
 * [Prerequisites](#prerequisites)
@@ -40,11 +39,6 @@ Inbreedr: Stoffel et al. 2016. Methods Ecol. Evol. 7:1331-1339.
 More about ID: David et al. 2007. Mol. Ecol. 16:2474–2487.
 
 
-Login on the server
-------------------
-
-If you will login to the bioinformatics server for the first time, please contact the BU or refer to the tutorial on gitlab (https://gitlab.bioinf.nioo.knaw.nl/tutorials/server-login) or download the corresponding .pdf from the left hand site on the intranet (https://intranet.nioo.knaw.nl/en/bioinformatics-unit).
-
 Copying the pipeline
 ------------------
 
@@ -53,7 +47,7 @@ To start a new analysis project based on this pipeline, follow the following ste
 - Clone and rename the pipeline-skeleton from our GitLab server by typing in the terminal. Replace <name> by your NIOO login-name. Cloning will only work, if you have logged in to gitlab at least once before:
 
 ```
-git clone https://<name>@gitlab.bioinf.nioo.knaw.nl/pipelines/HFC-permutation.git
+git clone https://github.com/nioo-knaw/HFC-permutation
 ```
 
 - Enter `HFC-permutation`
